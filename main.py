@@ -33,6 +33,7 @@ bot = onchebot.add_bot(
 
 @bot.command("/autobot")
 async def on_ai(msg: Message, _):
+    """Generate and post an AI reply to the given message."""
     topic: Topic | None = await redis().get_topic(msg.topic_id)
     if not topic:
         return
