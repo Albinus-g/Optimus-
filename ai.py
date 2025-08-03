@@ -22,8 +22,10 @@ async def get_msg_history(msg: Message) -> list[Message]:
     # Get the message history
     if isinstance(msg.answer_to, int):
         # If it's an answer, get the last 10 previous messages in the thread
+        # We only fetch the most recent messages (50) since we just need
+        # enough to reconstruct the reply chain without loading the whole topic.
         full_history: list[Message] = await redis().get_topic_messages(
-            msg.topic_id, count=200
+            msg.topic_id, count=50
         )
         msg_history = [msg]
         last_answer_to: int = msg.answer_to
