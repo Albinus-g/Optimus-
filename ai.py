@@ -1,3 +1,4 @@
+import logging
 import os
 import re
 
@@ -7,6 +8,7 @@ from onchebot.models import Message
 from onchebot.redis_client import redis
 from together import AsyncTogether
 
+logger = logging.getLogger(__name__)
 rate_limit = AsyncLimiter(1, 10.1)
 client = AsyncTogether()
 
@@ -110,5 +112,6 @@ async def get_ai_answer(
                 stream=False,
             )
             return beautify_content(res.choices[0].message.content)
-        except:
+        except Exception as e:
+            logger.exception("Failed to get AI answer: %s", e)
             return ":Rien_compris:"
