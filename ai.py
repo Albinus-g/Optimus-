@@ -10,10 +10,12 @@ from together import AsyncTogether
 rate_limit = AsyncLimiter(1, 10.1)
 client = AsyncTogether()
 
+METADATA_RE = re.compile(r"Id: \d+\nAuteur: .*\nRéponse à: \d+\n")
+
 
 def beautify_content(content: str):
-    pattern = r"Id: \d+\nAuteur: .*\nRéponse à: \d+\n"
-    return re.sub(pattern, "", content)
+    """Supprime les lignes de métadonnées (Id, Auteur, Réponse à) du contenu fourni."""
+    return METADATA_RE.sub("", content)
 
 
 async def get_msg_history(msg: Message) -> list[Message]:
