@@ -8,6 +8,26 @@ from onchebot.redis_client import redis
 
 load_dotenv()
 
+REQUIRED_ENV_KEYS = [
+    "ONCHE_USERNAME",
+    "ONCHE_PASSWORD",
+    "ONCHE_ADMIN",
+    "REDIS_USERNAME",
+    "REDIS_PASSWORD",
+    "LOKI_URL",
+]
+
+
+def check_env() -> None:
+    missing = [key for key in REQUIRED_ENV_KEYS if not os.environ.get(key)]
+    if missing:
+        raise RuntimeError(
+            "Missing required environment variables: " + ", ".join(missing)
+        )
+
+
+check_env()
+
 from ai import get_ai_answer, get_msg_history
 
 onchebot.setup(
