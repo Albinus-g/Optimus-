@@ -7,7 +7,14 @@ from onchebot.models import Message
 from onchebot.redis_client import redis
 from together import AsyncTogether
 
-rate_limit = AsyncLimiter(1, 10.1)
+
+MODEL_NAME = os.environ.get(
+    "MODEL_NAME", "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
+)
+RATE_LIMIT_CALLS = int(os.environ.get("RATE_LIMIT_CALLS", "1"))
+RATE_LIMIT_PERIOD = float(os.environ.get("RATE_LIMIT_PERIOD", "10.1"))
+
+rate_limit = AsyncLimiter(RATE_LIMIT_CALLS, RATE_LIMIT_PERIOD)
 client = AsyncTogether()
 
 
@@ -86,7 +93,7 @@ async def get_ai_answer(
 
         try:
             res = await client.chat.completions.create(
-                model="meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+                model=MODEL_NAME,
                 messages=[
                     {"role": "system", "content": system_prompt},
                 ]
